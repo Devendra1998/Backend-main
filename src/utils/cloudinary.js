@@ -1,5 +1,5 @@
 import { v2 as cloudinary } from 'cloudinary';
-import fs from 'fs';
+import { removeFilesFromLocal } from './helper.js';
 
 
 // Configuration
@@ -17,10 +17,13 @@ const uploadOnCloudinary = async (localFilePath) => {
         // Upload the file on cloudinary
         const response = await cloudinary.uploader.upload(localFilePath,{resource_type:"auto"});
         // File has been uploaded successfully
-        console.log('File is uploaded on Cloudinary',response.url);
+        // console.log('File is uploaded on Cloudinary',response.url);
+
+        // Remove the locally saved file temporary file as upload operation got Succeed
+        removeFilesFromLocal(localFilePath);
         return response
     } catch (error) {
-        fs.unlinkSync(localFilePath); // Remove the locally saved file temporary file as upload operation got failed
+        removeFilesFromLocal(localFilePath); // Remove the locally saved file temporary file as upload operation got failed
         return null;
     }
 }
